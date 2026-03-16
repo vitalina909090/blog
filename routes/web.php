@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
@@ -19,3 +20,6 @@ Route::get('/comments', [CommentController::class, 'index'])
 
 Route::get('/comments/{comment}', [CommentController::class, 'show'])
     ->name('comments.show');
+
+Route::post('/orders', [OrderController::class, 'process'])
+    ->name('orders.process');
