@@ -23,3 +23,22 @@ Route::get('/comments/{comment}', [CommentController::class, 'show'])
 
 Route::post('/orders', [OrderController::class, 'process'])
     ->name('orders.process');
+
+Route::get('/adults', function() {
+    return response()->json([
+        'success' => true,
+        'message' => 'Welcome!!!'
+    ]);
+})->middleware('age:18')
+    ->name('adults.index');
+
+// TODO: функции когда нужно будет защитить несколько маршрутов одним токеном и/или разместить их под общим URL-корнем:
+// prefix() - для общего начала URL
+// group() - чтобы объединить все маршруты вместе и применить middleware ко всем
+Route::get('/account', function () {
+    return response()->json([
+        'success' => true,
+        'message' => 'Доступ разрешен. Здравствуйте!'
+    ]);
+})->middleware('token')
+    ->name('account.show');
