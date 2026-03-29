@@ -1,14 +1,11 @@
 info:
-  name: adults.index
+  name: posts.show
   type: http
-  seq: 2
+  seq: 4
 
 http:
   method: GET
-  url: http://localhost:80/adults
-  headers:
-    - name: X-User-Age
-      value: "20"
+  url: http://localhost:80/posts/1
   auth: inherit
 
 settings:

@@ -5,7 +5,10 @@ info:
 
 http:
   method: GET
-  url: ""
+  url: http://localhost:80/account
+  headers:
+    - name: X-App-Token
+      value: a4LEh1fkGdVrxl4
   auth: inherit
 
 settings:
