@@ -159,6 +159,7 @@ Route::prefix('views')
         Route::get('/deepinh', [BladeController::class, 'deepInheritance'])->name('deepInheritance');
         Route::get('/stack', [BladeController::class, 'stack'])->name('stack');
         Route::get('/components', [BladeController::class, 'components'])->name('components');
+        Route::get('/input', [BladeController::class, 'input'])->name('input');
         Route::get('/slot', [BladeController::class, 'slot'])->name('slot');
     });
 
