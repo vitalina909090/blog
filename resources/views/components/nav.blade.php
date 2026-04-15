@@ -2,7 +2,7 @@
     'logo' => 'My Blog',
     'links' => [
         ['route' => 'posts.index', 'label' => 'Posts'],
-        ['route' => 'posts.posts_table', 'label' => 'Table'],
+//        ['route' => 'posts.posts_table', 'label' => 'Table'],
         ['route' => 'about', 'label' => 'About'],
         ['route' => 'contact', 'label' => 'Contact'],
     ],

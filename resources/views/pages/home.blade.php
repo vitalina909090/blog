@@ -12,4 +12,13 @@
             <p>Блог для группы П32</p>
         </div>
     </div>
+
+    @isAdmin
+        Hello admin
+    @endIsAdmin
+
+    @if($userRole === 'admin')
+        Hello admin
+    @endif
+
 @endsection

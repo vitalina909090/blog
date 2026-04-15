@@ -1,11 +1,16 @@
 <?php
 
-use \App\Http\Controllers\BladeController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BladeController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PostController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\ValidationController;
 use App\Models\Post;
+use Illuminate\Support\Facades\Route;
 
 //Route::get('/', function () {
 //    return view('welcome');
@@ -17,12 +22,6 @@ use App\Models\Post;
 //Route::get('/posts/{post}', [PostController::class, 'show'])
 //    ->name('posts.show');
 //
-//Route::get('/comments', [CommentController::class, 'index'])
-//    ->name('comments.index');
-//
-//Route::get('/comments/{comment}', [CommentController::class, 'show'])
-//    ->name('comments.show');
-//
 //Route::post('/orders', [OrderController::class, 'process'])
 //    ->name('orders.process');
 //
@@ -32,20 +31,10 @@ use App\Models\Post;
 //        'message' => 'Welcome!!!'
 //    ]);
 //})->middleware('age:18')
-//    ->name('adults.index');
-//
-//// TODO: функции когда нужно будет защитить несколько маршрутов одним токеном и/или разместить их под общим URL-корнем:
-//// prefix() - для общего начала URL
-//// group() - чтобы объединить все маршруты вместе и применить middleware ко всем
-//Route::get('/account', function () {
-//    return response()->json([
-//        'success' => true,
-//        'message' => 'Доступ разрешен. Здравствуйте!'
-//    ]);
-//})->middleware('token')
-//    ->name('account.show');
+//->name('adults.index');
 
-#region Path/Routes example
+
+
 // ====== path parameters
 //Route::get('/users/{id}', function ($id) {
 //    return "User $id";
@@ -112,19 +101,14 @@ use App\Models\Post;
 //    Route::get('/posts', ....);
 //});
 
-#endregion
+//Route::get('/admin/dashboard', function () {
+//    return 'This is dashboard';
+//})->middleware('can:access-admin-panel');
+//
+//Route::middleware('can:access-admin-panel')->group(function () {
+//
+//});
 
-#region Resource route example
-//Route::resource('/tasks', TaskController::class);
-//Route::apiResource('/projects', ProjectController::class);
-
-//Route::apiResource([
-//    'posts' => PostController::class,
-//    'projects' => ProjectController::class
-//]);
-
-//Route::post('/server', \App\Http\Controllers\LogsController::class);
-#endregion
 
 
 
@@ -132,25 +116,25 @@ Route::view('/', 'pages.home')->name('home');
 Route::view('/about', 'pages.about')->name('about');
 Route::view('/contact', 'pages.contact')->name('contact');
 
-Route::prefix('posts')
-    ->name('posts.')
-    ->group(function () {
 
-        Route::get('/', [PostController::class, 'index'])
-            ->middleware('throttle:std')
-            ->name('index');
+//Route::prefix('posts')
+//    ->name('posts.')
+//    ->group(function () {
+//
+//        Route::get('/', [PostController::class, 'index'])
+//            ->middleware('throttle:std')
+//            ->name('index');
+//
+//        Route::get('/{post}', [PostController::class, 'show'])
+//            ->name('show');
+//
+//        Route::post('/', [PostController::class, 'store'])
+//            ->name('store');
+//
+//    });
 
-        Route::get('/posts_table', [PostController::class, 'posts_table'])
-            ->name('posts_table');
 
-        Route::get('/{post}', [PostController::class, 'show'])
-            ->name('show');
-
-        Route::post('/', [PostController::class, 'store'])
-            ->name('store');
-
-    });
-
+// ---------------
 Route::prefix('views')
     ->name('views.')
     ->group(function () {
@@ -159,9 +143,55 @@ Route::prefix('views')
         Route::get('/deepinh', [BladeController::class, 'deepInheritance'])->name('deepInheritance');
         Route::get('/stack', [BladeController::class, 'stack'])->name('stack');
         Route::get('/components', [BladeController::class, 'components'])->name('components');
-        Route::get('/input', [BladeController::class, 'input'])->name('input');
         Route::get('/slot', [BladeController::class, 'slot'])->name('slot');
+    });
+// -----------
+
+Route::prefix('validation')
+    ->name('validation.')
+    ->group(function () {
+        Route::post('/', [ValidationController::class, 'intro']);
     });
 
 
+// ============ POSTS ==================
 
+Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show')
+    ->where('post', '[0-9]+');
+
+Route::middleware('auth')
+    ->prefix('posts')
+    ->name('posts.')
+    ->group(function () {
+        Route::get('/create',       [PostController::class, 'create'])  ->name('create');
+        Route::post('/',            [PostController::class, 'store'])   ->name('store');
+        Route::get('/{post}/edit',  [PostController::class, 'edit'])    ->name('edit');
+        Route::put('/{post}',       [PostController::class, 'update'])  ->name('update');
+        Route::delete('/{post}',    [PostController::class, 'destroy']) ->name('destroy');
+    });
+
+
+Route::middleware('auth')
+    ->prefix('comments')
+    ->name('comments.')
+    ->group(function () {
+        Route::post('/posts/{post}', [CommentController::class, 'store'])->name('store');
+        Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
+});
+
+Route::get('/test', function() {})->middleware('can:view,App\Models\Post');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
+
+Route::get('/test', [TagController::class, 'test']);

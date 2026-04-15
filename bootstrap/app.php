@@ -2,7 +2,6 @@
 
 use App\Http\Middleware\CheckAgeMiddleware;
 use App\Http\Middleware\LogRequestMiddleware;
-use App\Http\Middleware\EnsureTokenIsValid;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,7 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->validateCsrfTokens(except: [
             '/orders',
-            '/posts'
+//            '/posts',
+            '/validation'
         ]);
 
         $middleware->append([
@@ -25,8 +25,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'age' => CheckAgeMiddleware::class,
-            'token' => EnsureTokenIsValid::class,
         ]);
+
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

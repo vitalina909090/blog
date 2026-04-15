@@ -21,17 +21,16 @@
     {{--        <i class="bi bi-airplane-engines-fill"></i>--}}
     {{--    @endif--}}
 
-    {{--    TODO: icon size???--}}
     @if($type === 'success')
-        <svg class="bi me-2 shrink-0" role="img">
+        <svg class="bi me-2 shrink-0" style="height: 100px; width: 100px" role="img">
             <use xlink:href="#check-circle-fill" />
         </svg>
     @elseif($type === 'danger')
-        <svg class="bi me-2 shrink-0" role="img">
+        <svg class="bi me-2 shrink-0" style="height: 100px; width: 100px" role="img">
             <use xlink:href="#radioactive" />
         </svg>
     @else
-        <svg class="bi me-2" role="img">
+        <svg class="bi me-2" style="height: 100px; width: 100px" role="img">
             <use xlink:href="#airplane-engines-fill" />
         </svg>
     @endif
