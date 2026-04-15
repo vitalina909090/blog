@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    $pageTitle = 'Все посты';
+    $pageTitle = 'Ваши посты';
 @endphp
 
 @section('title', $pageTitle)
@@ -30,7 +30,8 @@
 
         @if($posts->isEmpty())
             <div class="alert alert-info">
-                Пока нет ни одного поста
+                У вас пока нет опубликованных постов.
+                <a href="{{ route('posts.create') }}">Создать пост</a>
             </div>
         @else
             @foreach($posts as $post)

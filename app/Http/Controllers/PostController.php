@@ -15,9 +15,45 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::where('is_published', true)
+            ->latest()
+            ->get();
 
         return view('posts.index', compact('posts'));
+    }
+    
+    public function myposts()
+    {
+        $posts = Post::where('author_id', Auth::id())
+            ->where('is_published', true)
+            ->latest()
+            ->get();
+
+        return view('posts.myposts', compact('posts'));
+    }
+
+    public function drafts()
+    {
+        $posts = Post::where('author_id', Auth::id())
+            ->where('is_published', false)
+            ->latest()
+            ->get();
+
+        return view('posts.drafts', compact('posts'));
+    }
+
+    public function publish(Post $post)
+    {
+        $this->authorize('update', $post);
+
+        $post->update(['is_published' => true]);
+
+        session()->flash('alert', [
+            'type' => 'success',
+            'message' => 'Пост успешно опубликован'
+        ]);
+
+        return redirect()->route('posts.drafts');
     }
 
     public function show(Post $post)
@@ -39,15 +75,18 @@ class PostController extends Controller
     {
         $validated = $request->validated();
 
-
-        $validated['author_id'] = Auth::user()->id;
+        $validated['author_id'] = Auth::id();
         $validated['slug'] = Str::slug(Str::limit($validated['title'], 10));
 
         Post::create($validated);
 
+        $message = $validated['is_published']
+            ? 'Пост успешно создан'
+            : 'Черновик успешно создан';
+
         session()->flash('alert', [
             'type' => 'success',
-            'message' => 'Пост успешно создан'
+            'message' => $message
         ]);
 
         return redirect()->route('posts.index');

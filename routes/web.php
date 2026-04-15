@@ -109,14 +109,6 @@ use Illuminate\Support\Facades\Route;
 //
 //});
 
-
-
-
-Route::view('/', 'pages.home')->name('home');
-Route::view('/about', 'pages.about')->name('about');
-Route::view('/contact', 'pages.contact')->name('contact');
-
-
 //Route::prefix('posts')
 //    ->name('posts.')
 //    ->group(function () {
@@ -133,6 +125,12 @@ Route::view('/contact', 'pages.contact')->name('contact');
 //
 //    });
 
+
+
+
+Route::view('/', 'pages.home')->name('home');
+Route::view('/about', 'pages.about')->name('about');
+Route::view('/contact', 'pages.contact')->name('contact');
 
 // ---------------
 Route::prefix('views')
@@ -165,12 +163,14 @@ Route::middleware('auth')
     ->name('posts.')
     ->group(function () {
         Route::get('/create',       [PostController::class, 'create'])  ->name('create');
+        Route::get('/myposts',           [PostController::class, 'myposts'])      ->name('myposts');
+        Route::get('/drafts',       [PostController::class, 'drafts'])  ->name('drafts');
         Route::post('/',            [PostController::class, 'store'])   ->name('store');
         Route::get('/{post}/edit',  [PostController::class, 'edit'])    ->name('edit');
         Route::put('/{post}',       [PostController::class, 'update'])  ->name('update');
         Route::delete('/{post}',    [PostController::class, 'destroy']) ->name('destroy');
+        Route::patch('/{post}/publish', [PostController::class, 'publish'])->name('publish');
     });
-
 
 Route::middleware('auth')
     ->prefix('comments')

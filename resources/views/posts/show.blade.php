@@ -55,20 +55,23 @@
 
             <div class="d-flex gap-2 mt-3">
                 <a class="btn btn-sm btn-outline-primary" href="{{ route('posts.index') }}">
-                   Назад к списку
+                    Назад к списку
                 </a>
 
-                <a class="btn btn-sm btn-outline-info" href="{{ route('posts.edit', $post->id) }}">
-                    Изменить
-                </a>
+                @can('update', $post)
+                    <a class="btn btn-sm btn-outline-info" href="{{ route('posts.edit', $post->id) }}">
+                        Изменить
+                    </a>
 
-                <form action="{{ route('posts.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Вы уверены?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                        Удалить
-                    </button>
-                </form>
+                    <form action="{{ route('posts.destroy', $post->id) }}" method="POST"
+                        onsubmit="return confirm('Вы уверены?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            Удалить
+                        </button>
+                    </form>
+                @endcan
             </div>
 
 
